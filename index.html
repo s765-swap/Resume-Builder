@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <meta name="description" content="Open Source Resume Builder - Create, save, and download professional resumes for free. Mobile-friendly, privacy-first, and easy to use.">
+    <meta name="theme-color" content="#6366f1">
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body class="bg-gray-100 flex items-center justify-center p-4 min-h-screen">
+
+    <div class="flex flex-col md:flex-row gap-8 w-full max-w-7xl">
+
+        <!-- Input Form -->
+        <div class="md:w-1/2 bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-6">
+            <h1 class="text-3xl font-bold text-center text-gray-800">Build Your Resume</h1>
+            <p class="text-center text-gray-500">Fill in the details below to create your professional resume.</p>
+
+            <!-- Personal Info -->
+            <div class="space-y-4">
+                <h2 class="text-2xl font-semibold text-gray-700 border-b pb-2">Personal Information</h2>
+                <input id="name" type="text" placeholder="Full Name" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                <input id="title" type="text" placeholder="Job Title" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                <textarea id="summary" placeholder="Professional Summary" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 h-24"></textarea>
+                <input id="email" type="email" placeholder="Email" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                <input id="phone" type="tel" placeholder="Phone Number" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                <input id="location" type="text" placeholder="City, State" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+                <input id="linkedin" type="url" placeholder="LinkedIn Profile URL" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300">
+            </div>
+
+            <!-- Work Experience -->
+            <div id="work-experience-container" class="space-y-4">
+                <h2 class="text-2xl font-semibold text-gray-700 border-b pb-2">Work Experience</h2>
+                <!-- Dynamic work experience blocks will be added here -->
+                <div class="work-experience-block bg-gray-50 p-4 rounded-xl space-y-2">
+                    <input type="text" placeholder="Job Title" class="job-title w-full p-2 border border-gray-300 rounded-lg">
+                    <input type="text" placeholder="Company" class="company w-full p-2 border border-gray-300 rounded-lg">
+                    <input type="text" placeholder="Start Date - End Date" class="dates w-full p-2 border border-gray-300 rounded-lg">
+                    <textarea placeholder="Job Description (comma-separated bullets)" class="description w-full p-2 border border-gray-300 rounded-lg h-20"></textarea>
+                </div>
+                <button onclick="addWorkExperience()" class="w-full p-3 bg-indigo-500 text-white font-semibold rounded-lg hover:bg-indigo-600 transition duration-300">Add another job</button>
+            </div>
+
+            <!-- Education -->
+            <div id="education-container" class="space-y-4">
+                <h2 class="text-2xl font-semibold text-gray-700 border-b pb-2">Education</h2>
+                <!-- Dynamic education blocks will be added here -->
+                <div class="education-block bg-gray-50 p-4 rounded-xl space-y-2">
+                    <input type="text" placeholder="Degree" class="degree w-full p-2 border border-gray-300 rounded-lg">
+                    <input type="text" placeholder="University" class="university w-full p-2 border border-gray-300 rounded-lg">
+                    <input type="text" placeholder="Years attended" class="years w-full p-2 border border-gray-300 rounded-lg">
+                </div>
+                <button onclick="addEducation()" class="w-full p-3 bg-indigo-500 text-white font-semibold rounded-lg hover:bg-indigo-600 transition duration-300">Add another education entry</button>
+            </div>
+
+            <!-- Skills -->
+            <div class="space-y-4">
+                <h2 class="text-2xl font-semibold text-gray-700 border-b pb-2">Skills</h2>
+                <textarea id="skills" placeholder="List your skills (comma-separated)" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 h-24"></textarea>
+            </div>
+
+            <!-- Generate Button Group -->
+            <div class="flex flex-col gap-3">
+                <button id="fresher-autofill" aria-label="Auto-fill with fresher template" title="Auto-fill with a professional fresher resume template" class="w-full p-3 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition duration-300">Fresher (Auto-Fill)</button>
+                <button id="generate-pdf" aria-label="Download resume as PDF" title="Download your resume as a PDF" class="w-full p-4 bg-emerald-500 text-white font-bold text-xl rounded-lg hover:bg-emerald-600 transition duration-300 shadow-xl">Download Resume as PDF</button>
+            </div>
+        </div>
+
+        <!-- Resume Preview -->
+        <div class="md:w-1/2 flex flex-col items-center">
+            <div id="resume-preview" class="resume-page p-8 rounded-2xl shadow-xl transform transition-transform duration-500 hover:scale-[1.01] overflow-hidden">
+                <!-- Resume content will be rendered here dynamically -->
+                <div class="text-center mb-6">
+                    <h1 id="preview-name" class="text-4xl font-extrabold text-gray-800">Your Name</h1>
+                    <h2 id="preview-title" class="text-xl text-gray-600 font-medium mt-1">Your Job Title</h2>
+                    <p id="preview-contact" class="text-sm text-gray-500 mt-2">
+                        <span id="preview-email">email@example.com</span> | <span id="preview-phone">123-456-7890</span> | <span id="preview-location">City, State</span> | <a id="preview-linkedin" href="#" class="text-indigo-500 hover:underline">LinkedIn</a>
+                    </p>
+                </div>
+
+                <div class="section-break"></div>
+
+                <!-- Summary Section -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 uppercase tracking-wide mb-2">Summary</h3>
+                    <p id="preview-summary" class="text-sm text-gray-700 leading-relaxed"></p>
+                </div>
+
+                <div class="section-break"></div>
+
+                <!-- Work Experience Section -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 uppercase tracking-wide mb-2">Work Experience</h3>
+                    <div id="preview-work-experience" class="space-y-4">
+                       
+                    </div>
+                </div>
+
+                <div class="section-break"></div>
+
+                <!-- Education Section -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 uppercase tracking-wide mb-2">Education</h3>
+                    <div id="preview-education" class="space-y-4">
+                        <!-- Dynamic education content will be here -->
+                    </div>
+                </div>
+
+                <div class="section-break"></div>
+
+                <!-- Skills Section -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 uppercase tracking-wide mb-2">Skills</h3>
+                    <div id="preview-skills" class="text-sm text-gray-700">
+                        <!-- Dynamic skills content will be here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

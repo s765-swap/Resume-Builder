@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6;
+}
+.resume-page {
+    width: 210mm;
+    min-height: 297mm;
+    box-shadow: 0 0 16px rgba(0,0,0,0.12);
+    background-color: #fff;
+    padding: 2.5rem;
+    margin: 0 auto;
+    border-radius: 1.5rem;
+    border: 2px solid #e0e7ef;
+}
+.resume-page h1, .resume-page h2, .resume-page h3 {
+    color: #4f46e5;
+    letter-spacing: 0.02em;
+}
+.resume-page h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.25em;
+}
+.resume-page h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5em;
+}
+.resume-page h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.5em;
+    text-transform: uppercase;
+}
+.section-break {
+    height: 2px;
+    background-color: #e5e7eb;
+    margin: 2rem 0;
+    border-radius: 1px;
+}
+#preview-skills span {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+    margin-bottom: 0.25em;
+}
+#preview-work-experience h4, #preview-education h4 {
+    color: #0f172a;
+    font-weight: 700;
+}
+#preview-work-experience span, #preview-education span {
+    color: #64748b;
+}
+@media (max-width: 768px) {
+  .resume-page {
+    width: 100vw;
+    min-width: unset;
+    padding: 1rem;
+  }
+  .flex.md\:flex-row {
+    flex-direction: column !important;
+  }
+  .md\:w-1\/2 {
+    width: 100% !important;
+  }
+  .p-6.md\:p-8 {
+    padding: 1.5rem !important;
+  }
+}
+button, input, textarea {
+  touch-action: manipulation;
+}
